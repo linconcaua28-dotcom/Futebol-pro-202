@@ -10,8 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Baixar projeto
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Configurar Node
         uses: actions/setup-node@v4
@@ -24,8 +23,7 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Configurar Android
-        uses: android-actions/setup-android@v3
+      - uses: android-actions/setup-android@v3
 
       - name: Extrair projeto
         run: |
@@ -33,24 +31,24 @@ jobs:
           unzip -q *.zip -d extracted
 
       - name: Instalar dependências
-        working-directory: extracted/futbol_build
+        working-directory: extracted/futbol_build/futbol_build
         run: npm install
 
-      - name: Criar Android
-        working-directory: extracted/futbol_build
+      - name: Preparar Android
+        working-directory: extracted/futbol_build/futbol_build
         run: npx cap add android
 
-      - name: Sincronizar
-        working-directory: extracted/futbol_build
+      - name: Sincronizar Android
+        working-directory: extracted/futbol_build/futbol_build
         run: npx cap sync android
 
       - name: Compilar APK
-        working-directory: extracted/futbol_build/android
+        working-directory: extracted/futbol_build/futbol_build/android
         run: ./gradlew assembleDebug
 
-      - name: Disponibilizar APK
+      - name: Salvar APK
         uses: actions/upload-artifact@v4
         with:
-          name: Futbol-Pro-2027-APK
-          path: extracted/futbol_build/android/app/build/outputs/apk/debug/app-debug.apk
+          name: Futbol-Pro-2027
+          path: extracted/futbol_build/futbol_build/android/app/build/outputs/apk/debug/app-debug.apk
           
