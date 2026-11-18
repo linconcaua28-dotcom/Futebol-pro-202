@@ -12,18 +12,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Configurar Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Configurar Java
-        uses: actions/setup-java@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      - uses: android-actions/setup-android@v3
+      - name: Configurar Android
+        uses: android-actions/setup-android@v4
+        with:
+          packages: platform-tools
 
       - name: Extrair projeto
         run: |
@@ -31,24 +32,24 @@ jobs:
           unzip -q *.zip -d extracted
 
       - name: Instalar dependências
-        working-directory: extracted/futbol_build/futbol_build
+        working-directory: extracted/futbol_build
         run: npm install
 
-      - name: Preparar Android
-        working-directory: extracted/futbol_build/futbol_build
+      - name: Adicionar Android
+        working-directory: extracted/futbol_build
         run: npx cap add android
 
-      - name: Sincronizar Android
-        working-directory: extracted/futbol_build/futbol_build
+      - name: Sincronizar
+        working-directory: extracted/futbol_build
         run: npx cap sync android
 
       - name: Compilar APK
-        working-directory: extracted/futbol_build/futbol_build/android
+        working-directory: extracted/futbol_build/android
         run: ./gradlew assembleDebug
 
-      - name: Salvar APK
+      - name: Disponibilizar APK
         uses: actions/upload-artifact@v4
         with:
-          name: Futbol-Pro-2027
-          path: extracted/futbol_build/futbol_build/android/app/build/outputs/apk/debug/app-debug.apk
+          name: FUTBOL-PRO-2027
+          path: extracted/futbol_build/android/app/build/outputs/apk/debug/app-debug.apk
           
